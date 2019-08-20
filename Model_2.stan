@@ -1,16 +1,16 @@
 data {
-  int<lower=0> popSize;
-  int<lower=0> ss;
-  int<lower=0> r; //number of counties
-  int<lower=0> J; //number of cells
-  int s[r]; // number of cells in each county
-  int<lower=0> nk[r]; //sample count by county
-  int<lower=0> Nk[r]; //population count by county
-  int county[J]; //county index for each obs
-  int<lower=0> y[J]; //response
-  int<lower=0> vec_n[J];
+  int<lower=0> popSize; //number of units in population
+  int<lower=0> ss; //sample size
+  int<lower=0> r; //number of areas
+  int<lower=0> J; //toal number of cells
+  int s[r]; // number of cells in each area
+  int<lower=0> nk[r]; //sample count by area
+  int<lower=0> Nk[r]; //population count by area
+  int county[J]; //area index for each obs
+  int<lower=0> y[J]; //sum of sample binary responses aggregated by cell
+  int<lower=0> vec_n[J]; //sample size for each cell
   real w[J]; //weights
-  int<lower=0> n_Uni;
+  int<lower=0> n_Uni; //number of unique weights
   real uni_W[n_Uni]; //unique weights that define the cells (sorted)
   int<lower=1, upper=n_Uni> uni_W_Ind[J]; //unique weight indicator (for sorted weights)
   matrix<lower=0, upper=1>[r, r] W; //county adjacency matrix
@@ -19,8 +19,6 @@ transformed data {
   real delta = 1e-9;
   vector[r] zeros;
   vector[J] vec_w;
-  //vector[N] lW;
-  //real lW_uni[J];
   matrix<lower=0>[r, r] D;
   {
     vector[r] W_rowsums;
@@ -31,8 +29,6 @@ transformed data {
   }
   zeros = rep_vector(0, r);
   vec_w = to_vector(w);
-  //lW = log(vec_w);
-  //lW_uni = log(uni_W);
 }
 parameters {
   vector[r] u; //spatial random effects
@@ -78,8 +74,8 @@ model {
   rho ~ inv_gamma(5,5);
 }
 generated quantities {
-  vector[J] cellPopNorm;
-  vector[J] cellMean;
+  vector[J] cellPopNorm; //estimated cell population size
+  vector[J] cellMean; //estimated cell probability of outcome = 1
   int pos2;
   pos2=1;
   for(c in 1:r){
