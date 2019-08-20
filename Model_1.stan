@@ -17,7 +17,7 @@ model {
   mu ~ normal(0, sigmaD);
   linPred = X*beta + mu[cty];
   for(n in 1:N){
-    target += wgt[n] * bernoulli_logit_lpmf(Y[n]|linPred[n]); // exponentiate likelihood -> multiply log-likelihood 
+    target += wgt[n] * bernoulli_logit_lpmf(Y[n]|linPred[n]); 
   }
   for(b in 1:P){
     beta[b] ~ normal(0,1000);
