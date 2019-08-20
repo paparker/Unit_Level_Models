@@ -1,15 +1,15 @@
 data {
-  int<lower = 1> n; //number of obs
-  real lwt[n]; //log of weights
-  int<lower=1> m;
-  int<lower=1, upper=m> grp[n];
-  int<lower=1> p;
-  matrix[n, p] X;
-  int<lower=0, upper=1> y[n];
-  int<lower=1> n_pred;
-  int<lower=1, upper=m> grp_pred[n_pred];
-  matrix[n_pred, p] X_pred;
-  matrix[m, n_pred] N_MAT;
+  int<lower = 1> n; //number of sample obs
+  real lwt[n]; //log of weights for sample obs
+  int<lower=1> m; //number of areas
+  int<lower=1, upper=m> grp[n]; //area number of each sample obs
+  int<lower=1> p; //number of covariates
+  matrix[n, p] X; //Fixed effect design matrix for sample
+  int<lower=0, upper=1> y[n]; //Binary response for sample
+  int<lower=1> n_pred;  //number of cells in each county
+  int<lower=1, upper=m> grp_pred[n_pred]; //area number for each prediction
+  matrix[n_pred, p] X_pred; //Fixed effects design matrix for predictions
+  matrix[m, n_pred] N_MAT; //Population size matrix for each cell
 }
 parameters {
   vector[p] beta;
