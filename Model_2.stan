@@ -40,9 +40,11 @@ parameters {
 
   real<lower=0> alphaGP;
   real<lower=0> rho;
+  real b0;
   vector[n_Uni] eta;
 }
 transformed parameters {
+  real<lower=0> gamma;
   vector[n_Uni] f;
   matrix[n_Uni, n_Uni] L_K;
   matrix[n_Uni, n_Uni] K=cov_exp_quad(uni_W, alphaGP, rho);
@@ -51,6 +53,7 @@ transformed parameters {
   }
   L_K = cholesky_decompose(K);
   f = L_K * eta;
+  gamma = sqrt(alphaGP);
 }
 model {
   vector[J] cellExp;
@@ -64,14 +67,15 @@ model {
   }
   vec_n ~ poisson(cellExp);
 
-  y ~ binomial_logit(vec_n, f[uni_W_Ind] + v[county] + u[county]);
+  y ~ binomial_logit(vec_n, b0 + f[uni_W_Ind] + v[county] + u[county]);
+  b0 ~ normal(0,10);
   u ~ multi_normal_prec(zeros, precU*(D - alpha*W)); //CAR prior on u
   v ~ normal(0, sigV); // iid prior on v
-  precU ~ normal(0, 100); //prior on precU
-  sigV ~ normal(0, 100); //prior on sigV
+  precU ~ cauchy(0,5); //prior on precU
+  sigV ~ cauchy(0, 5); //prior on sigV
   eta ~ normal(0,1);
-  alpha ~ normal(0,1);
-  rho ~ inv_gamma(5,5);
+  rho ~ cauchy(0,5);
+  gamma ~ cauchy(0,5);
 }
 generated quantities {
   vector[J] cellPopNorm; //estimated cell population size
