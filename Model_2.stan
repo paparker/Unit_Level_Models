@@ -68,7 +68,7 @@ model {
   vec_n ~ poisson(cellExp);
 
   y ~ binomial_logit(vec_n, b0 + f[uni_W_Ind] + v[county] + u[county]);
-  b0 ~ normal(0,10);
+  b0 ~ normal(0,sqrt(10));
   u ~ multi_normal_prec(zeros, precU*(D - alpha*W)); //CAR prior on u
   v ~ normal(0, sigV); // iid prior on v
   precU ~ cauchy(0,5); //prior on precU
