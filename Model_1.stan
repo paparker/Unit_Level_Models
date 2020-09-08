@@ -21,6 +21,6 @@ model {
     target += wgt[n] * bernoulli_logit_lpmf(Y[n]|linPred[n]); 
   }
   for(b in 1:P){
-    beta[b] ~ normal(0,10);
+    beta[b] ~ normal(0,sqrt(10));
   }
 }
