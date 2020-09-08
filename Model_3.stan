@@ -31,9 +31,9 @@ model {
     lwt[i] ~ normal(X[i, ]*alpha + y[i]*a, tau_w);
   }
   phi ~ normal(0, tau);
-  beta ~ normal(0, 10);
-  alpha ~ normal(0, 10);
-  a ~ normal(0, 10);
+  beta ~ normal(0, sqrt(10));
+  alpha ~ normal(0, sqrt(10));
+  a ~ normal(0, sqrt(10));
   tau ~ cauchy(0, 5);
   tau_w ~ cauchy(0, 5);
 }
